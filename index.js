@@ -1,49 +1,24 @@
-import "dotenv/config.js" //auto-load env secrets
-import { DjsConnect, DjsClientSocket } from "@unitn-asa/deliveroo-js-sdk"
+import 'dotenv/config.js';
+import { DjsConnect } from '@unitn-asa/deliveroo-js-sdk';
+import { BeliefBase } from './src/beliefs.js';
+import { BDIAgent } from './src/agent.js';
 
-const socket = DjsConnect()
+// Connect 
+const socket = DjsConnect();
 
-/*
-const moveUp = socket.emitMove("up")
-moveUp.then((data) => {
-  console.log(data)
-})
+socket.onConnect(() => {
+  console.log('Connected to server');
+});
 
-// socket.emitPickup()
-*/
+socket.onDisconnect(() => {
+  console.warn('Disconnected');
+});
 
-// listen for any info about agent
-// socket.onYou((agent) => {
-//   console.log(agent)
-// })
+// Initialise BDI components 
+const beliefs = new BeliefBase();
+const agent = new BDIAgent(socket, beliefs);
 
-// socket.onSensing((data) => {
-//   console.log(data.agents.length)
-// })
+// Start the agent 
+agent.start();
 
-// Review Tile configs slide-10
-
-let myPos = { x: 0, y: 0 }
-
-socket.onYou((id, name, x, y) => {
-  myPos = { x, y }
-})
-
-socket.emitMove("up").then((data) => console.log(data))
-
-// socket.onMap(async (width, height, tiles) => {
-//   const directions = ["right", "right", "down", "left", "left"]
-
-//   for (const direction of directions) {
-//     const result = await socket.emitMove(direction)
-
-//     if (!result) {
-//       console.log(`❌: ${direction}, retrying...`)
-//       await new Promise((resolveFn) => {
-//         setTimeout(resolveFn, 100)
-//       })
-
-//       const result = await socket.emitMove(direction)
-//     }
-//   }
-// })
+console.log('[NPCurious] Agent started — waiting for world data...');
