@@ -2,20 +2,95 @@
 
 - This strategy was formulated by considering the Lecture on BDI loop implementation and associated lab example found in `/references/bdi-loop.js. A complete history of the exercise can be found [here](https://share.solve.it.com/d/6376211d6dad098af5fdfcf88f97e64a#phase-1-quick-alignment-bdi-loop-the-code_1.html):
 
-## Architecture overview
+## Overview
 
 Separate concerns into modules that mirror the BDI loop:
 
-- **Beliefs** — stateful module exposing both an event emitter (push:
-  "parcel-appeared", "parcel-taken", "agent-moved") and a query API
-  (pull: `getFreeParcels()`, `isObstacleAt(x,y)`, etc.)
-- **Options** — generator (B → O) and EV-based filter (O → S)
-- **Intentions** — queue + revision strategies (Queue / Replace / Revise)
-  as swappable plug-ins; intentions are first-class objects with metadata
-  (createdAt, estimatedEV, progress, status)
-- **Plans** — library of plan classes with `isApplicableTo` + cost
-  estimates, plus a context-aware selector
-- **Utils** — pure helpers: distance, A\* pathfinding, EV math
+```
+src/
+├── beliefs/
+│   ├── BeliefBase.js          # stateful: me, parcels (with memory + confidence),
+│   │                          # agents, map; exposes both events + query API
+│   ├── revision.js            # update vs. revision logic, decay
+│   │                          # Bayesian update on contradicting evidence
+│   ├── events.js              # emits semantic events:
+│   │                          #   parcel-appeared, parcel-taken, parcel-gone,
+│   │                          #   agent-moved, carry-changed, ...
+│   └── queries.js             # pull API: getFreeParcels(), isObstacleAt(x,y),
+│                              # getNearestDeliveryZone(), getAgentDistance(id)
+│
+├── options/
+│   ├── generator.js           # B → O: pickup options, deliver options,
+│   │                          # (later: explore options when idle)
+│   └── filter.js              # O → S using EV = P(available) × Reward
+│                              # subscribes to belief events as triggers
+│
+├── intentions/
+│   ├── Intention.js           # first-class object with metadata:
+│   │                          #   { predicate, createdAt, estimatedEV,
+│   │                          #     progress, status }
+│   ├── IntentionQueue.js      # the loop, lifecycle, validity checks
+│   └── strategies/
+│       ├── Queue.js           # FIFO baseline
+│       ├── Replace.js         # preempt with newest
+│       └── Revise.js          # EV re-ranking + hysteresis + sunk-cost
+│
+├── plans/
+│   ├── PlanBase.js            # stop(), subIntention(), logging
+│   ├── selector.js            # context-aware plan choice (not first-match)
+│   └── library/
+│       ├── GoPickUp.js
+│       ├── GoDeliver.js
+│       ├── BlindMove.js       # kept as fallback
+│       └── AStarMove.js       # belief-aware path planner
+│
+├── utils/
+│   ├── distance.js            # Manhattan
+│   ├── pathfinding.js         # A* over BeliefBase.queries.isWalkable
+│   └── ev.js                  # computeEV(option, beliefs) → number
+│
+├── comms/                     # Phase 5
+│   ├── MessageBus.js          # inter-agent communication
+│   ├── protocols.js           # share-beliefs, claim-intention, ...
+│   └── trust.js               # per-agent trust factor for Bayesian updates
+│
+├── llm/                       # Phase 5
+│   ├── adapter.js             # NL instruction → BDI predicate
+│   └── prompts.js
+│
+└── agent.js                   # wires everything: socket → BeliefBase →
+                               # events → options → intentions → plans → socket
+
+```
+
+- Dataflow at runtime
+
+```
+socket.onSensing ──> BeliefBase.revise()
+                         │
+                         ├──emits──> "parcel-appeared" ──> options.generator
+                         │                                       │
+                         │                                       ▼
+                         │                                  options.filter (EV)
+                         │                                       │
+                         │                                       ▼
+                         │                                  intentions.push(opt)
+                         │                                       │
+                         │                              strategies/Revise re-ranks
+                         │                                       │
+                         │                                       ▼
+                         │                                  IntentionQueue.loop
+                         │                                       │
+                         │                                       ▼
+                         │                                  plans.selector
+                         │                                       │
+                         │                                       ▼
+                         │                                  Plan.execute ──> socket.emit*
+                         │
+                         └──queries──> used by EV math, plan selector,
+                                        path planner, validity checks
+
+```
 
 ---
 
