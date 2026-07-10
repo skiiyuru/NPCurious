@@ -51,4 +51,4 @@ if (typeof socket.onDisconnect === "function") {
   socket.onDisconnect(() => console.warn("[agentB] disconnected from server"))
 }
 
-// console.log(`[agentB] connecting to ${config.host} as LLM agent`)
+console.log(`[agentB] connecting to ${config.host} as LLM agent`)
