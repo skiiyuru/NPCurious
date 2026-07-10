@@ -5,7 +5,11 @@
     "sourceMap": true,
     "allowJs": true,
     "checkJs": true,
+    "skipLibCheck": true,
+    "types": ["node"],
+    "maxNodeModuleJsDepth": 0,
     "moduleResolution": "nodenext"
   },
+  "include": ["*.js", "src/**/*.js", "src/**/*.d.ts"],
   "exclude": ["node_modules", "**/node_modules/*"]
 }

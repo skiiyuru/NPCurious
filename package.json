@@ -9,11 +9,18 @@
   "devDependencies": {
     "@commitlint/cli": "^20.5.0",
     "@commitlint/config-conventional": "^20.5.0",
+    "@types/node": "^25.9.1",
     "husky": "^9.1.7",
     "lint-staged": "^16.4.0",
-    "prettier": "^3.8.1"
+    "prettier": "^3.8.1",
+    "typescript": "^6.0.3"
   },
   "scripts": {
+    "start": "node index.js",
+    "start:a": "node index.js",
+    "start:b": "node indexB.js",
+    "test": "node test/run-tests.js",
+    "typecheck": "tsc -p jsconfig.json --noEmit",
     "prepare": "husky"
   },
   "lint-staged": {
