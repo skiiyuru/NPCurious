@@ -1,58 +1,32 @@
 # NPCurious
 
-An autonomous agent for the [Deliveroo.js](https://github.com/unitn-ASA/Deliveroo.js) parcel delivery game, built for the **Autonomous Software Agents** course at the University of Trento (A.Y. 2025-26).
+A coordinated multi-agent system for the [Deliveroo.js](https://github.com/unitn-ASA/Deliveroo.js) parcel delivery game, built for the **Autonomous Software Agents** course at the University of Trento (A.Y. 2025-26).
 
 ## Overview
 
-NPCurious is a BDI-based agent that autonomously navigates a grid environment, picking up and delivering parcels to maximize score. The project will extend to include an LLM-based agent capable of interpreting natural language objectives and coordinating with the BDI agent.
+Agent A is a BDI agent that navigates, collects, and delivers parcels autonomously. Agent B is a full BDI player with an LLM coordinator feature that interprets natural-language missions from the game chat and solves them through an iterative tool-calling loop. The coordinator can act on Agent B itself or delegate commands to Agent A over the game socket via `assign_to_teammate`.
+
+**Belief revision:** Bayesian correction for missing parcels within sensing range, exponential decay for parcels outside range. **Strategy adaptation:** the LLM can set policies (carry capacity, locked batching) and constraints (delivery zone whitelist/blacklist, tile avoidance, reward thresholds) that persistently modify autonomous behaviour. **PDDL integration:** an external planner with local A\* fallback for navigation.
 
 ## Prerequisites
 
 - [Node.js](https://nodejs.org/) (v18+)
-- [pnpm](https://pnpm.io/)
-- Access to a Deliveroo.js server (local or UniTN VPN)
+- [pnpm](https://pnpm.io/) or npm
 
 ## Setup
 
 ```bash
-git clone the repo
+git clone <repo-url>
 cd NPCurious
 pnpm install
-```
-
-Create a `.env` file from the example:
-
-```bash
 cp .env.example .env
 ```
 
-Set your `HOST` and `TOKEN` values (get your token from the Deliveroo.js 3D client).
+Set `HOST`, `TOKEN` (Agent A), `TOKEN_B` (Agent B), and `LLM_BASE_URL` in `.env`.
 
 ## Usage
 
 ```bash
-node index.js
-```
-
-## Development
-
-This project enforces code quality via Git hooks:
-
-- **Prettier** — auto-formats staged files on commit
-- **Commitlint** — enforces [Conventional Commits](https://www.conventionalcommits.org/) (`feat:`, `fix:`, `chore:`, etc.)
-
-Hooks are managed by [Husky](https://typicode.github.io/husky/) + [lint-staged](https://github.com/lint-staged/lint-staged).
-
-## Team
-
-- Steve
-- Thomas
-
-## License
-
-[MIT](LICENSE)
-
-```
-
-Adjust the repo URL, team details, and any specifics. You can always expand sections as the project grows!
+pnpm start:a    # Agent A (BDI player)
+pnpm start:b    # Agent B (BDI player + LLM coordinator)
 ```
