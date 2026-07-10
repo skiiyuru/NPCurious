@@ -184,14 +184,14 @@ export function createBdiAgent({
     })
 
     bus.on(Protocols.ASSIGN_TASK, ({ targetId, command }) => {
-      console.log(
-        "[coord] received ASSIGN_TASK",
-        command?.type,
-        "targetId:",
-        targetId,
-        "my id:",
-        beliefs.me?.id
-      )
+      // console.log(
+      //   "[coord] received ASSIGN_TASK",
+      //   command?.type,
+      //   "targetId:",
+      //   targetId,
+      //   "my id:",
+      //   beliefs.me?.id
+      // )
       const addressedToSomeoneElse = Boolean(
         targetId && beliefs.me && targetId !== beliefs.me.id
       )
@@ -199,12 +199,12 @@ export function createBdiAgent({
       if (!command) return
       try {
         const result = applyUserCommand(command, beliefs, intentionQueue)
-        console.log(
-          "[coord] result:",
-          result.applied,
-          result.reason,
-          result.text ?? ""
-        )
+        // console.log(
+        //   "[coord] result:",
+        //   result.applied,
+        //   result.reason,
+        //   result.text ?? ""
+        // )
         if (result.applied) {
           logger.log?.("[coord] applied", command.type, "->", result.reason)
           beliefs.emit(BeliefEvents.CHANGED, { type: "assigned" })

@@ -121,34 +121,34 @@ export class ExternalPlanner {
     try {
       const domain = buildDomain()
       const problem = buildProblem(beliefs, start, goal)
-      console.log("[planner] submitting to online solver")
+      // console.log("[planner] submitting to online solver")
       const raw = await this.solver(domain, problem, this.solverOptions)
       if (raw == null) {
-        console.log("[planner] solver unavailable, falling back to A*")
+        // console.log("[planner] solver unavailable, falling back to A*")
         return this.fallback(start, goal, beliefs)
       }
       const directions = parsePlan(raw)
       if (directions == null) {
-        console.log("[planner] unparseable result, falling back to A*")
+        // console.log("[planner] unparseable result, falling back to A*")
         return this.fallback(start, goal, beliefs)
       }
       if (directions.length === 0) {
-        console.log("[planner] already at goal")
+        // console.log("[planner] already at goal")
         return []
       }
       if (!isValidPath(start, goal, directions, beliefs)) {
-        console.log("[planner] invalid path, falling back to A*")
+        // console.log("[planner] invalid path, falling back to A*")
         return this.fallback(start, goal, beliefs)
       }
-      console.log(
-        "[planner] online plan:",
-        directions.length,
-        "steps ->",
-        directions.join(", ")
-      )
+      // console.log(
+      //   "[planner] online plan:",
+      //   directions.length,
+      //   "steps ->",
+      //   directions.join(", ")
+      // )
       return directions
     } catch (e) {
-      console.log("[planner] error, falling back to A*:", e?.message ?? e)
+      // console.log("[planner] error, falling back to A*:", e?.message ?? e)
       return this.fallback(start, goal, beliefs)
     }
   }
