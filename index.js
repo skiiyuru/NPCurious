@@ -8,13 +8,13 @@ const socket = /** @type {any} */ (DjsConnect(config.host, config.token))
 
 if (typeof socket.onConnect === "function") {
   socket.onConnect(() => {
-    console.log("[BDI] connected to server")
+    console.log("[agentA] connected to server")
   })
 }
 
 if (typeof socket.onDisconnect === "function") {
   socket.onDisconnect(() => {
-    console.warn("[BDI] disconnected from server")
+    console.warn("[agentA] disconnected from server")
   })
 }
 
@@ -29,4 +29,4 @@ export const agent = createBdiAgent({
   logger: quietLogger,
 })
 
-console.log(`[BDI] connecting to ${config.host} as ${config.name}`)
+console.log(`[agentA] connecting to ${config.host} as ${config.name}`)

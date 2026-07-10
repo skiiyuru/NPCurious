@@ -115,7 +115,7 @@ export class ExternalPlanner {
    */
   async plan(start, goal, beliefs) {
     if (!this.usePlanner || !start || !goal) {
-      console.log("[planner] disabled, using A*")
+      // console.log("[planner] disabled, using A*")
       return this.fallback(start, goal, beliefs)
     }
     try {

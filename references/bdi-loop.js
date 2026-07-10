@@ -185,7 +185,7 @@ class IntentionRevisionQueue extends IntentionRevision {
     )
       return // intention is already queued
 
-    console.log("IntentionRevisionReplace.push", predicate)
+    // console.log("IntentionRevisionReplace.push", predicate)
     const intention = new IntentionDeliberation(this, predicate)
     this.intention_queue.push(intention)
   }
@@ -202,7 +202,7 @@ class IntentionRevisionReplace extends IntentionRevision {
       return // intention is already being achieved
     }
 
-    console.log("IntentionRevisionReplace.push", predicate)
+    // console.log("IntentionRevisionReplace.push", predicate)
     const intention = new IntentionDeliberation(this, predicate)
     this.intention_queue.push(intention)
 
@@ -280,7 +280,7 @@ class IntentionDeliberation {
   /** @type { function(...any): void } */
   log(...args) {
     if (this.#parent && this.#parent.log) this.#parent.log("\t", ...args)
-    else console.log(...args)
+    // else console.log(...args)
   }
 
   #started = false
@@ -399,7 +399,7 @@ class PlanBase {
   /** @type { function(...any): void } */
   log(...args) {
     if (this.#parent && this.#parent.log) this.#parent.log("\t", ...args)
-    else console.log(...args)
+    // else console.log(...args)
   }
 
   // this is an array of sub intention. Multiple ones could eventually being achieved in parallel.

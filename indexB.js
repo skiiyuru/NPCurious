@@ -44,13 +44,11 @@ export const coordinator = attachCoordinator(agentB, {
 // });
 
 if (typeof socket.onConnect === "function") {
-  socket.onConnect(() =>
-    console.log("[agentB] connected as BDI player + LLM coordinator")
-  )
+  socket.onConnect(() => console.log("[agentB] connected as LLM agent"))
 }
 
 if (typeof socket.onDisconnect === "function") {
   socket.onDisconnect(() => console.warn("[agentB] disconnected from server"))
 }
 
-console.log(`[agentB] connecting to ${config.host} as LLM agent`)
+// console.log(`[agentB] connecting to ${config.host} as LLM agent`)
