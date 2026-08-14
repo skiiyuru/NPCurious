@@ -37,7 +37,7 @@ import { errorMessage } from "../utils/errors.js"
  */
 export function attachCoordinator(
   agent,
-  { client, logger = console, maxSteps = 8 } = {}
+  { client, logger = console, maxSteps = 15 } = {}
 ) {
   const { beliefs, intentions, bus, socket } = agent
 

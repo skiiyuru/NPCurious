@@ -58,7 +58,7 @@ export class Intention {
   }
 
   /**
-   * Update sunk-cost progress as plan advances.
+   * Update sunk-cost progress as plan advances. steps := steps to target.
    * @param {number} done - Steps completed.
    * @param {number} total - Total planned steps.
    */

@@ -153,6 +153,7 @@ export function createBdiAgent({
 
   // Broadcast status once if peer id unknown, then switch to direct messages.
   let statusBroadcastOnce = false
+
   function reportStatus() {
     if (!beliefs.me) return
     const current = intentionQueue.current()

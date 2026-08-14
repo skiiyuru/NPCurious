@@ -1,5 +1,7 @@
 # NPCurious
 
+![cover](image.png)
+
 A coordinated multi-agent system for the [Deliveroo.js](https://github.com/unitn-ASA/Deliveroo.js) parcel delivery game, built for the **Autonomous Software Agents** course at the University of Trento (A.Y. 2025-26).
 
 ## Overview
